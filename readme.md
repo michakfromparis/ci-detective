@@ -14,20 +14,38 @@ Perfect for those using self-hosted runners, the Repo State Dumper is the ultima
 
 ## Inputs
 
-## `read-package.json`
+## `system-info` 
+**[Optional]** prints system info. Defaults to true.
 
-**Optional** dump standard attributes of package.json
+## `git-info` 
+**[Optional]** prints git info. Defaults to true.
+
+## `package-json` 
+**[Optional]** prints name and version from package.json and compares version with tag version.
+Defaults to false unless package.json present at root of repository.
+
+## `package-json-path`
+**[Optional]** set the full path to package.json
+Defaults to root of repository.
 
 ## Example usage
 
-Print generic info for any kind of project
+Print generic system & git info for any kind of project
 ```
 uses: michakfromparis/build-info-detective
+```
 
-Print name, version from package.json in a sub directory
+Print name, version from package.json. If on a version tagged branch, compare the version with the tag version
 ```
 uses: michakfromparis/build-info-detective
 with:
   read-package-json: true
-  package-json-path: /workspace/front/package.json
+```
+
+If on a monorepo, specify the full path to package.json
+```
+uses: michakfromparis/build-info-detective
+with:
+  read-package-json: true
+  package-json-path: workspace/front/package.json
 ```
