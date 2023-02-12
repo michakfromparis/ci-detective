@@ -1,4 +1,4 @@
-# 🕵️ Build Info Detective
+# 🕵️ CI Detective
 
 
 💻🔍 Get ready to geek out with this ultimate repo diagnostic tool! 🔬
@@ -21,10 +21,10 @@ Perfect for those using self-hosted runners, the Repo State Dumper is the ultima
 **[Optional]** prints git info. Defaults to true.
 
 ## `inspect-github-environment` 
-**[Optional]** prints the value of the github environment variables.
+**[Optional]** prints the value of the github environment variables. Defaults to false.
 
 ## `inspect-environment` 
-**[Optional]** prints the value of the environment variable names separated by a comma.
+**[Optional]** prints the value of the environment variable names separated by a comma. See example usage.
 
 ## `inspect-package-json` 
 **[Optional]** prints name and version from package.json and compares version with tag version.
@@ -36,37 +36,37 @@ Defaults to root of repository.
 
 ## Example usage
 
-Inspect system & git info
+Inspect system & git info.
 ```
-uses: michakfromparis/build-info-detective
+uses: michakfromparis/ci-detective@1.1.0
 ```
 
-Inspect git info
+Inspect git info only.
 ```
-uses: michakfromparis/build-info-detective
+uses: michakfromparis/ci-detective@1.1.0
 with:
   inspect-system: false
   inspect-git: true
 ```
 
-Inspect system info, git info and the ENVIRONMENT, APP_ENV & CONFIGURATION variables
+Inspect system info, git info and the ENVIRONMENT, APP_ENV & CONFIGURATION variables.
 ```
-uses: michakfromparis/build-info-detective
+uses: michakfromparis/ci-detective@1.1.0
 with:
   inspect-environment: 'ENVIRONMENT, APP_ENV, CONFIGURATION'
 ```
 
 Inspect system info, git info & package. name, version from package.json.
-If on a version tagged branch, compare the version with the tag version
+If on a version tagged branch, compare the version with the tag version.
 ```
-uses: michakfromparis/build-info-detective
+uses: michakfromparis/ci-detective@1.1.0
 with:
   inspect-package-json: true
 ```
 
-If on a monorepo, specify the full path to package.json
+If on a monorepo, specify the full path to package.json.
 ```
-uses: michakfromparis/build-info-detective
+uses: michakfromparis/ci-detective@1.1.0
 with:
   inspect-package-json: true
   package-json-path: workspace/front/package.json
