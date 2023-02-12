@@ -1,9 +1,13 @@
 #!/bin/sh -l
 
+# INPUT_PACKAGE_JSON=true
+# INPUT_PACKAGE_JSON_PATH='./package.json'
+# INPUT_SYSTEM_INFO=false
+# INPUT_GIT_INFO=false
+
 function draw_frame() {
   local msg="$1"
   local line=$(echo "$msg" | sed 's/./-/g')
-  echo ""
   echo ""
   echo "+-$line-+"
   echo "| $msg |"
@@ -14,12 +18,12 @@ function draw_frame() {
 get_env() { [ -z "$(eval echo "\$$1")" ] && echo "$1 is undefined" || eval echo "\$$1"; }
 
 function system_info() {
-  echo "🖥️  Runner hostname   : $(uname -n)"
-  echo "💻  Runner name       : $(get_env RUNNER_NAME)"
-  echo "🌐  Runner OS         : $(get_env RUNNER_OS)"
-  echo "🔧  Runner Arch       : $(get_env RUNNER_ARCH)"
-  echo "🕹️  Github run number : $(get_env RUN_NUMBER)"
-  echo "🚧  uname -a          : $(uname -a)"
+  echo "🖥️  Runner hostname : $(uname -n)"
+  echo "💻  Runner name     : $(get_env RUNNER_NAME)"
+  echo "🌐  Runner OS       : $(get_env RUNNER_OS)"
+  echo "🔧  Runner Arch     : $(get_env RUNNER_ARCH)"
+  echo "🕹️  Github build #  : $(get_env RUN_NUMBER)"
+  echo "🚧  uname -a        : $(uname -a)"
 }
 
 function git_info() {
@@ -34,32 +38,39 @@ function git_info() {
 }
 
 function package_info() {
-  local package_json_path=${INPUT_PACKAGE-JSON-PATH:-/workspace/front/package.json}
+  local package_json_path=${INPUT_PACKAGE_JSON_PATH:-package.json}
   if [ ! -f "$package_json_path" ]; then
     echo "❌  Error: package.json not found at $package_json_path"
     return
   fi
-  local name=$(grep -Po '"name" *: *"\K[^"]+' $package_json_path)
-  local version=$(grep -Po '"version" *: *"\K[^"]+' $package_json_path)
+  local name=$(grep '"name"' "$package_json_path" | awk '{print $2}' | sed 's/[",]//g')
+  local version=$(grep '"version"' "$package_json_path" | awk '{print $2}' | sed 's/[",]//g')
   echo "📜  name               : ${name}"
   echo "📦  version            : ${version}"
   # Compare package.json version with tag version
   echo "🔍  Comparing package.json version with tag version:"
-  if [ "${BRANCH}" != "refs/tags/${version}" ]; then
-    echo "  ⚠️  Warning: Package.json version (${version}) does not match tag version (${BRANCH})"
-  else
-    echo "  ✅  Package.json version matches tag version"
+  if [ "${version_tag}" != 'No version tag detected' ] && [ "${version_tag:0:1}" == 'v' ]; then
+    if [ "${version_tag}" != "v${version}" ]; then
+      echo "  ⚠️  Warning: package.json version (${version}) does not match tag version (${version_tag})"
+    else
+      echo "  ✅  package.json version matches tag version"
+    fi
   fi
 }
 
 draw_frame "🕵️ Build information detective results"
-draw_frame "📈 System Information"
-system_info
 
-draw_frame "🧪 Git information:"
-git_info
+if [ "${INPUT_SYSTEM_INFO:-true}" != "false" ]; then
+  draw_frame "📈 System Information"
+  system_info
+fi
 
-if [ "${INPUT_PACKAGE-JSON:-false}" == "true" ]; then
+if [ "${INPUT_GIT_INFO:-true}" != "false" ]; then
+  draw_frame "🧪 Git information:"
+  git_info
+fi
+
+if [ "${INPUT_PACKAGE_JSON:-false}" == "true" ] || [ -f "package.json" ]; then
   draw_frame "📦  Package Information"
   package_info
 else
