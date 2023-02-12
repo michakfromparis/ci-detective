@@ -1,0 +1,14 @@
+name: 'Print git build runner info'
+description: 'Dumps clear info on the repo state, runner state, github variables, tags & versions to make sure you can read your logs easily. Typical executes at the begining of your workflow, right after your checkout action. Works well with self-hosted runners'
+
+inputs:
+  read-package-json:
+    description: 'Read generic info from the package.json file'
+    required: false
+    default: false
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.read-package.json }}
