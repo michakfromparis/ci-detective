@@ -14,13 +14,19 @@ Perfect for those using self-hosted runners, the Repo State Dumper is the ultima
 
 ## Inputs
 
-## `system-info` 
+## `inspect-system` 
 **[Optional]** prints system info. Defaults to true.
 
-## `git-info` 
+## `inspect-git` 
 **[Optional]** prints git info. Defaults to true.
 
-## `package-json` 
+## `inspect-github-environment` 
+**[Optional]** prints the value of the github environment variables.
+
+## `inspect-environment` 
+**[Optional]** prints the value of the environment variable names separated by a comma.
+
+## `inspect-package-json` 
 **[Optional]** prints name and version from package.json and compares version with tag version.
 Defaults to false unless package.json present at root of repository.
 
@@ -30,22 +36,38 @@ Defaults to root of repository.
 
 ## Example usage
 
-Print generic system & git info for any kind of project
+Inspect system & git info
 ```
 uses: michakfromparis/build-info-detective
 ```
 
-Print name, version from package.json. If on a version tagged branch, compare the version with the tag version
+Inspect git info
 ```
 uses: michakfromparis/build-info-detective
 with:
-  read-package-json: true
+  inspect-system: false
+  inspect-git: true
+```
+
+Inspect system info, git info and the ENVIRONMENT, APP_ENV & CONFIGURATION variables
+```
+uses: michakfromparis/build-info-detective
+with:
+  inspect-environment: 'ENVIRONMENT, APP_ENV, CONFIGURATION'
+```
+
+Inspect system info, git info & package. name, version from package.json.
+If on a version tagged branch, compare the version with the tag version
+```
+uses: michakfromparis/build-info-detective
+with:
+  inspect-package-json: true
 ```
 
 If on a monorepo, specify the full path to package.json
 ```
 uses: michakfromparis/build-info-detective
 with:
-  read-package-json: true
+  inspect-package-json: true
   package-json-path: workspace/front/package.json
 ```
